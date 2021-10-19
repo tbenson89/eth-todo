@@ -2,45 +2,59 @@ App = {
     load: async () => {
         // Load The Application
         console.warn("The Application is Loading...");
-
-        // Connection to web3 // TODO: This may need to be revised based on metamask new support etc 
         await App.loadWeb3();
 
     },
 
-    // https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8
-    // ERROR: You are accessing the MetaMask window.web3.currentProvider shim. This property is deprecated; use window.ethereum instead. 
-    // For details, see: https://docs.metamask.io/guide/provider-migration.html#replacing-window-web3
-    // ERROR: Web3 is not defined ! 
+    // https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8 
+    // https://web3js.readthedocs.io/en/v1.5.2/web3-eth.html#sendtransaction
     loadWeb3: async () => {
         if (typeof web3 !== 'undefined') {
-            App.web3Provider = web3.currentProvider
-            web3 = new Web3(web3.currentProvider)
-        } else {
-            window.alert("Please connect to Metamask.")
-        }
-        // Modern dapp browsers...
-        if (window.ethereum) {
-            window.web3 = new Web3(ethereum)
-            try {
-                // Request account access if needed
-                await ethereum.enable()
-                // Acccounts now exposed
-                web3.eth.sendTransaction({/* ... */ })
-            } catch (error) {
-                // User denied account access...
+            App.web3Provider = window.ethereum; //  web3.currentProvider
+            web3 = new Web3(App.web3Provider); // but there is no Web3 Constructor!
+            console.log("Connected to MetaMask 🦊")
+            
+            // Modern dapp browsers...
+            if (window.ethereum) {
+                window.web3 = new Web3(ethereum);
+                console.log("The Provider is ETHER!");
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                const account = accounts[0];
+                console.log(account);
+
+                try {
+                    // using the event emitter
+                    web3.eth.sendTransaction({
+                        to: "0xA5318E64830b4BFc12B62eA36FAbEeC6a6dFfC01",
+                        from: account
+                    })
+                    .on('transactionHash', function(hash){
+                        console.log("Success!", hash)
+                    })
+                    .on('receipt', function(receipt){
+                        console.log("Success!", receipt)
+                    })
+                    .on('confirmation', function(confirmationNumber, receipt){ console.log(confirmationNumber, " ", receipt) })
+                    .on('error', console.error); // If a out of gas error, the second parameter is the receipt.
+                } catch (error) {
+                    console.log('There was a problem with the block transaction!', error);
+                }
             }
-        }
-        // Legacy dapp browsers...
-        else if (window.web3) {
-            App.web3Provider = web3.currentProvider
-            window.web3 = new Web3(web3.currentProvider)
-            // Acccounts always exposed
-            web3.eth.sendTransaction({/* ... */ })
-        }
-        // Non-dapp browsers...
-        else {
-            console.log('Non-Ethereum browser detected. You should consider trying MetaMask!')
+            // Legacy dapp browsers...
+            else if (window.web3) {
+                App.web3Provider = web3.currentProvider
+                window.web3 = new Web3(web3.currentProvider)
+                // Acccounts always exposed
+                web3.eth.sendTransaction({/* ... */ });
+                console.error("Legacy dApp Browser Detected: Accounts Exposed!");
+            }
+            // Non-dapp browsers...
+            else {
+                console.error('Non-Ethereum browser detected. You should consider trying MetaMask!')
+            }
+        } else {
+            window.alert("Please connect to Metamask.");
+            console.log(web3);
         }
     }
 }
@@ -50,8 +64,6 @@ $(() => {
         App.load();
     })
 });
-
-
 
 
 
