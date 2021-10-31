@@ -3,7 +3,7 @@ App = {
         // Load The Application
         console.warn("The Application is Loading...");
         await App.loadWeb3();
-
+        await App.loadAccount();
     },
 
     // https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8 
@@ -14,18 +14,21 @@ App = {
             web3 = new Web3(App.web3Provider); // but there is no Web3 Constructor!
             console.log("Connected to MetaMask 🦊")
             
-            // Modern dapp browsers...
+            // Modern dapp browsers... -- // TODO: This gets the transsactiosn and makes a transaction req. move to loadAccount!
             if (window.ethereum) {
                 window.web3 = new Web3(ethereum);
                 console.log("The Provider is ETHER!");
                 const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                 const account = accounts[0];
+                const testing = '0x3CEb3E76fC5c0d63dfdC5bE93a7366504369fF3D';
                 console.log(account);
+                console.log("__________");
+                console.log(testing);
 
                 try {
                     // using the event emitter
                     web3.eth.sendTransaction({
-                        to: "0xA5318E64830b4BFc12B62eA36FAbEeC6a6dFfC01",
+                        to: testing,
                         from: account
                     })
                     .on('transactionHash', function(hash){
@@ -56,6 +59,14 @@ App = {
             window.alert("Please connect to Metamask.");
             console.log(web3);
         }
+    },
+
+    loadAccount: async () => {
+        window.web3 = new Web3(ethereum);
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        App.account = accounts[0];
+        console.log("___Loading Accounts:___");
+        console.log(App.account);
     }
 }
 
