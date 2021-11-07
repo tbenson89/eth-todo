@@ -1,9 +1,11 @@
 App = {
+    contracts: {},
     load: async () => {
         // Load The Application
         console.warn("The Application is Loading...");
         await App.loadWeb3();
         await App.loadAccount();
+        await App.loadContract();
     },
 
     // https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8 
@@ -67,6 +69,17 @@ App = {
         App.account = accounts[0];
         console.log("___Loading Accounts:___");
         console.log(App.account);
+    },
+
+    // get tasks from smart contract!
+    loadContract: async () => {
+        console.log("Loading Smart contracts. . .");
+        const todoList = await $.getJSON('TodoList.json');
+        App.contracts.TodoList = TruffleContract(todoList);
+        App.contracts.TodoList.setProvider(App.web3Provider);
+        App.todoList = await App.contracts.TodoList.deployed();
+        
+        console.log(App.todoList);
     }
 }
 
