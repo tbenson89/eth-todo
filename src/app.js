@@ -1,11 +1,13 @@
 App = {
+    loading: false,
     contracts: {},
     load: async () => {
-        // Load The Application
+        // Load The Application!
         console.warn("The Application is Loading...");
         await App.loadWeb3();
         await App.loadAccount();
         await App.loadContract();
+        await App.render();
     },
 
     // https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8 
@@ -80,9 +82,40 @@ App = {
         App.todoList = await App.contracts.TodoList.deployed();
         
         console.log(App.todoList);
+    },
+
+    render: async () => {
+
+        // Prevent Double render - loading
+        if (App.loading) return; 
+
+        // Update app loading state
+        App.setLoading(true);
+
+        // Render the account on front site
+        $('#account').html(App.account);
+
+        // Update loading state
+        App.setLoading(false);
+    },
+    
+    // Loader function 
+    setLoading: (Boolean) => {
+        App.loading = Boolean;
+        const loader  = $('#loader'),
+              content = $('#content');
+        
+        if (Boolean) {
+            loader.show();
+            content.hide();
+        } else {
+            loader.hide();
+            content.show();
+        }
     }
 }
 
+// Load the Application!
 $(() => {
     $(window).load(() => {
         App.load();
