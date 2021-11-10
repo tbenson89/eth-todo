@@ -8,6 +8,7 @@ App = {
         await App.loadAccount();
         await App.loadContract();
         await App.render();
+        await App.renderTasks();
     },
 
     // https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8 
@@ -80,7 +81,6 @@ App = {
         App.contracts.TodoList = TruffleContract(todoList);
         App.contracts.TodoList.setProvider(App.web3Provider);
         App.todoList = await App.contracts.TodoList.deployed();
-        
         console.log(App.todoList);
     },
 
@@ -97,6 +97,42 @@ App = {
 
         // Update loading state
         App.setLoading(false);
+    },
+
+    renderTasks: async () => {
+
+        // We need to get teh number of tasks from the list - taskCount
+        const taskCount = await App.todoList.taskCount();
+        
+        // Get the HTML template from front site
+        const $taskTemplate = $('.taskTemplate');
+
+        for (let i = 1; i <= taskCount; i++) {
+            
+            // Consume the Task Data
+            const task          = await App.todoList.tasks(i),
+                  taskId        = task[0].toNumber(),
+                  taskContent   = task[1],
+                  taskCompleted = task[2];
+
+            // render out the tasks w/ task template HTML
+            const $newTaskTemplate = $taskTemplate.clone();
+            $newTaskTemplate.find('.content').html(taskContent);
+            $newTaskTemplate.find('input')
+                            .prop('name', taskId)
+                            .prop('checked', taskCompleted)
+                            //.on('click', App.toggleCompleted);
+
+            // Put the task in the correct list
+            if (taskCompleted) {
+                $('#completedTaskList').append($newTaskTemplate);
+            } else {
+                $('#taskList').append($newTaskTemplate);
+            }
+
+            // Display the task
+            $newTaskTemplate.show();
+        }
     },
     
     // Loader function 
