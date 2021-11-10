@@ -15,6 +15,13 @@ contract TodoList {
     // Create Mapping (key/value pair) like an array/obj? hash
     mapping(uint => Task) public tasks;
 
+    // TRIGGER: Event Listener  
+    event TaskCreated(
+        uint id,
+        string content, 
+        bool completed
+    );
+
     constructor() public {
         createTask("Check out SLMODD.COM");
     }
@@ -23,8 +30,12 @@ contract TodoList {
     function createTask(string memory _content) public {
         // detemine the ID of the taks we are creating 
         taskCount ++;
-        // Create the new task and add it to the countindexed array. 
+        // Create the new task and add it to the count indexed array. 
         // IE = create new Task _blank_ w/ text here that is incomplete -> array[0]. ++
         tasks[taskCount] = Task(taskCount, _content, false);
+
+        // broadcast event that this task was created
+        // Whenever we call the createTask FN it can listen for us
+        emit TaskCreated(taskCount, _content, false);
     }
 } 

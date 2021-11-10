@@ -25,34 +25,36 @@ App = {
                 const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                 const account = accounts[0];
                 const testing = '0x3CEb3E76fC5c0d63dfdC5bE93a7366504369fF3D';
+                web3.eth.defaultAccount = web3.eth.accounts[0];
                 console.log(account);
                 console.log("__________");
                 console.log(testing);
 
-                try {
-                    // using the event emitter
-                    web3.eth.sendTransaction({
-                        to: testing,
-                        from: account
-                    })
-                    .on('transactionHash', function(hash){
-                        console.log("Success!", hash)
-                    })
-                    .on('receipt', function(receipt){
-                        console.log("Success!", receipt)
-                    })
-                    .on('confirmation', function(confirmationNumber, receipt){ console.log(confirmationNumber, " ", receipt) })
-                    .on('error', console.error); // If a out of gas error, the second parameter is the receipt.
-                } catch (error) {
-                    console.log('There was a problem with the block transaction!', error);
-                }
+                // TODO: Move this out to it's own function sendETHER()
+                // try {
+                //     // using the event emitter
+                //     web3.eth.sendTransaction({
+                //         to: testing,
+                //         from: account
+                //     })
+                //     .on('transactionHash', function(hash){
+                //         console.log("Success!", hash)
+                //     })
+                //     .on('receipt', function(receipt){
+                //         console.log("Success!", receipt)
+                //     })
+                //     .on('confirmation', function(confirmationNumber, receipt){ console.log(confirmationNumber, " ", receipt) })
+                //     .on('error', console.error); // If a out of gas error, the second parameter is the receipt.
+                // } catch (error) {
+                //     console.log('There was a problem with the block transaction!', error);
+                // }
             }
             // Legacy dapp browsers...
             else if (window.web3) {
                 App.web3Provider = web3.currentProvider
                 window.web3 = new Web3(web3.currentProvider)
                 // Acccounts always exposed
-                web3.eth.sendTransaction({/* ... */ });
+                web3.eth.sendTransaction({ from: App.account });
                 console.error("Legacy dApp Browser Detected: Accounts Exposed!");
             }
             // Non-dapp browsers...
@@ -69,6 +71,7 @@ App = {
         window.web3 = new Web3(ethereum);
         const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
         App.account = accounts[0];
+        web3.eth.defaultAccount = web3.eth.accounts[0];
         console.log("___Loading Accounts:___");
         console.log(App.account);
     },
@@ -135,6 +138,13 @@ App = {
             // Display the task
             $newTaskTemplate.show();
         }
+    },
+
+    createTask: async () => {
+        App.setLoading(true);
+        const content = $('#newTask').val();
+        await App.todoList.createTask(content, {from: App.account});
+        window.location.reload();
     },
     
     // Loader function 
