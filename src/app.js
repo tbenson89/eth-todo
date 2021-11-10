@@ -8,7 +8,6 @@ App = {
         await App.loadAccount();
         await App.loadContract();
         await App.render();
-        await App.renderTasks();
     },
 
     // https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8 
@@ -94,6 +93,9 @@ App = {
 
         // Render the account on front site
         $('#account').html(App.account);
+
+        // Render the Tasks :)
+        await App.renderTasks();
 
         // Update loading state
         App.setLoading(false);
