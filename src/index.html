@@ -19,22 +19,17 @@
     <![endif]-->
 
     <style>
-        main {
-            margin-top: 60px;
-        }
+        main { margin-top: 60px; }
 
-        #content {
-            display: none;
-        }
+        #content { display: none; }
 
         form {
-            width: 350px;
+            width: 600px;
             margin-bottom: 10px;
         }
+        @media screen and (max-width: 620px) { form { width: 400px; } }
 
-        ul {
-            margin-bottom: 0px;
-        }
+        ul { margin-bottom: 0px; }
 
         #completedTaskList .content {
             color: grey;
@@ -44,8 +39,7 @@
 </head>
 <body>
     <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://www.slmodd.com"
-            target="_blank">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://www.slmodd.com" target="_blank">
             ETH CRUD App | Slightly Modified Technologies
         </a>
         <ul class="navbar-nav px-3">
@@ -58,9 +52,9 @@
             </li>
         </ul>
     </nav>
-    <div class="container"> <!--container-fluid-->
+    <div class="container-fluid"> <!--container-->
         <div class="row">
-            <main role="main" class="col-lg-12 d-flex justify-content-between"> <!--justify-content-center-->
+            <main role="main" class="col-lg-12 d-flex justify-content-center">
                 <div id="loader" class="text-center">
                     <p class="text-center">Loading...</p>
                 </div>

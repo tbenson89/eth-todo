@@ -126,7 +126,7 @@ App = {
             $newTaskTemplate.find('input')
                             .prop('name', taskId)
                             .prop('checked', taskCompleted)
-                            //.on('click', App.toggleCompleted);
+                            .on('click', App.toggleComplete);
 
             // Put the task in the correct list
             if (taskCompleted) {
@@ -144,6 +144,13 @@ App = {
         App.setLoading(true);
         const content = $('#newTask').val();
         await App.todoList.createTask(content, {from: App.account});
+        window.location.reload();
+    },
+
+    toggleComplete: async (event) => {
+        App.setLoading(true);
+        const taskId = event.target.name;
+        await App.todoList.toggleComplete(taskId, {from: App.account});
         window.location.reload();
     },
     
@@ -169,58 +176,3 @@ $(() => {
         App.load();
     })
 });
-
-
-
-/* SAVE2: This one actually connected to metamask ! but web3 error stil occurs web3 is not a constructor! */
-// App = {
-//     load: async () => {
-//     if (window.ethereum) { //check if Metamask is installed
-//             try {
-//                 const address = await window.ethereum.enable(); //connect Metamask
-//                 const obj = {
-//                         connectedStatus: true,
-//                         status: "",
-//                         address: address
-//                     }
-//                     return obj;
-                
-//             } catch (error) {
-//                 return {
-//                     connectedStatus: false,
-//                     status: "🦊 Connect to Metamask using the button on the top right."
-//                 }
-//             }
-            
-//     } else {
-//             return {
-//                 connectedStatus: false,
-//                 status: "🦊 You must install Metamask into your browser: https://metamask.io/download.html"
-//             }
-//         } 
-//     }
-// };
-
-// $(() => {
-//     $(window).load(() => {
-//         App.load();
-//     })
-// });
-
-
-
-
-/* SAVE: this is before web3 issues! */
-// App = {
-//     load: async () => {
-//         // Load App..
-//         console.log("App Loading...");
-//     }
-// }
-
-
-// $(() => {
-//     $(window).load(() => {
-//         App.load();
-//     })
-// })
