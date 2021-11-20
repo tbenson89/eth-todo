@@ -23,6 +23,13 @@ contract TodoList {
         bool completed
     );
 
+    // TRIGGER: Task Updated - Event Listener
+    event TaskUpdated(
+        uint id, 
+        string content, 
+        bool completed
+    );
+
     // TRIGGER: Task Completed - Event Listener
     event TaskCompleted(
         uint id,
@@ -43,6 +50,21 @@ contract TodoList {
         // broadcast event that this task was created
         // Whenever we call the createTask FN it can listen for us
         emit TaskCreated(taskCount, _content, false);
+    }
+
+    // TODO: Update Task / Edit task -- update frontend w/ hover edit call back BTN
+    function modifyTask(uint _id, string memory _content) public {
+        // get task by ID - TaskCount! 
+        Task memory _task2edit = tasks[_id];
+
+        // Update the task content w/ new content 
+        _task2edit.content = _content;
+
+        // Update the Task
+        tasks[_id] = _task2edit;
+
+        // Broadcast Task Updated!
+        emit TaskUpdated(_id, _task2edit.content, _task2edit.completed);
     }
 
     function toggleComplete(uint _id) public {

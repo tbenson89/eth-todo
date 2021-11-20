@@ -1,3 +1,5 @@
+const { default: Web3 } = require("web3");
+
 App = {
     loading: false,
     contracts: {},
@@ -16,7 +18,7 @@ App = {
         if (typeof web3 !== 'undefined') {
             App.web3Provider = window.ethereum; //  web3.currentProvider
             web3 = new Web3(App.web3Provider); // but there is no Web3 Constructor!
-            console.log("Connected to MetaMask 🦊")
+            console.log("Connected to MetaMask 🦊");
             
             // Modern dapp browsers... -- // TODO: This gets the transsactiosn and makes a transaction req. move to loadAccount!
             if (window.ethereum) {
@@ -65,6 +67,13 @@ App = {
             window.alert("Please connect to Metamask.");
             console.log(web3);
         }
+
+        // Enable ENS support 
+        // NOTE: https://docs.ens.domains/dapp-developer-guide/resolving-names --- for following the updating name service request by ENS
+        // !Improtant: https://docs.ens.domains/dapp-developer-guide/working-with-ens 
+        // accounts = ethereum.enable();
+        // web3 = new Web3(ethereum);
+        // var ens = web3.eth.ens;
     },
 
     loadAccount: async () => {
@@ -146,6 +155,13 @@ App = {
         await App.todoList.createTask(content, {from: App.account});
         window.location.reload();
     },
+
+    // modifyTask: async () => {
+    //     App.setLoading(false);
+    //     const content = $('#newTask').val();
+    //     await App.todoList.modifyTask(content, {from: App.account});
+    //     window.location.reload();
+    // },
 
     toggleComplete: async (event) => {
         App.setLoading(true);
