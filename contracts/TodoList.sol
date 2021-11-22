@@ -54,7 +54,8 @@ contract TodoList {
 
     // TODO: Update Task / Edit task -- update frontend w/ hover edit call back BTN
     function modifyTask(uint _id, string memory _content) public {
-        // get task by ID - TaskCount! 
+
+        // get task by ID 
         Task memory _task2edit = tasks[_id];
 
         // Update the task content w/ new content 

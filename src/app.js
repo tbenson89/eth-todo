@@ -156,12 +156,13 @@ App = {
         window.location.reload();
     },
 
-    // modifyTask: async () => {
-    //     App.setLoading(false);
-    //     const content = $('#newTask').val();
-    //     await App.todoList.modifyTask(content, {from: App.account});
-    //     window.location.reload();
-    // },
+     modifyTask: async () => {
+         App.setLoading(false);
+         //const content = $('#newTask').val();
+         let content = "I LOVE YOU!";
+         await App.todoList.modifyTask(content, {from: App.account});
+         //window.location.reload();
+     },
 
     toggleComplete: async (event) => {
         App.setLoading(true);
