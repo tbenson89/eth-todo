@@ -1,6 +1,6 @@
 # eth-todo
 
-TODO: Create a docker file to one click download app Dev_ENV
+TODO: Create a docker-like file to one click download app Dev_ENV
 
 ### Important
 - what you still need to do 
